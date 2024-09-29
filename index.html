@@ -172,6 +172,12 @@
                     <b>👑 Коронный слот:</b> <span id="crowned-slot">Ещё нет данных</span>
                 </div>
             </div>
+
+            <div class="table">
+                <h3>Сумма выданных бонусов:</h3>
+                <div id="total-bonus-amount">VND 0</div>
+            </div>
+            
         
             <div class="table" id="main-table">
                 <h3>Список бонусов:</h3>
@@ -260,12 +266,12 @@
         function setWinAmount() {
             const selectedIndex = document.getElementById('slot-selector').value;
             const winAmount = parseFloat(document.getElementById('win-amount').value);
-    
+            
             if (selectedIndex === "") {
                 alert("Пожалуйста, выберите слот.");
                 return;
             }
-    
+            
             // Проверка на редактирование выигрыша, если выигрыш уже введен
             if (slots[selectedIndex].win > 0) {
                 // Если это корректировка выигрыша, вычитаем старое значение из общей суммы выигрышей
@@ -274,23 +280,34 @@
                 // Если это новый выигрыш, увеличиваем количество открытых бонусов
                 openedBonuses++;
             }
-    
+
             // Устанавливаем новый выигрыш
             slots[selectedIndex].win = winAmount;
             totalWinAmount += winAmount;
-    
+
             // Обновляем отображение бонуса в списке
             const rows = document.querySelectorAll('#main-table .row');
             rows[selectedIndex].innerText = `${slots[selectedIndex].name} (${slots[selectedIndex].bet.toLocaleString('id-ID')}VND / ${convertToRub(slots[selectedIndex].bet)} ₽) ➜ ${winAmount.toLocaleString('id-ID')}VND / ${convertToRub(winAmount)} ₽`;
-    
+
             document.getElementById('win-amount').value = '';
             currentSlotIndex++;
-    
+
             updateBonusCount();
             updateCrownedSlot();
             updateAvgMultiplier(); // Обновляем средний X бонусов
             updateBalanceMultiplier(); // Обновляем отношение выигрышей к балансу
+            
+            // Обновляем сумму всех выданных бонусов
+            updateTotalBonusAmount();
         }
+
+        function updateTotalBonusAmount() {
+            const totalBonusDisplay = document.getElementById('total-bonus-amount');
+            const totalBonusRub = convertToRub(totalWinAmount);
+            totalBonusDisplay.innerText = `₨ ${totalWinAmount.toLocaleString('id-ID')} (${totalBonusRub} ₽)`;
+        }
+
+
     
         function copySlotName() {
             const selectedIndex = document.getElementById('slot-selector').value;
